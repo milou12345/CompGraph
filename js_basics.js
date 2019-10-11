@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 console.log("Hello World!");
 
@@ -159,6 +159,13 @@ v[1] = 'Hallo';
 
 
 
+
+
+
+
+
+
+
 //** Vectorization
 v = [1,2,3,4];
 console.log(v[2]);
@@ -196,6 +203,12 @@ w = v.map(x => Math.sin(x)*Math.cos(x));
 
 
 
+
+
+
+
+
+
 //* Objects
 
 // Object definition:
@@ -225,13 +238,31 @@ const obj1 = {
     console.log('Here is f');
     console.log('field 1 = '  + this.field1);
   }
-
-
 };
 
 obj1.func2 = function() {
   console.log('field 2 = '  + this.field2);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //** Copying
@@ -243,7 +274,10 @@ obj1.print();     // !!
 
 
 //** Passing objects to functions by reference:
-func = (obj) => obj.field1 = 67;
+func = function(obj) {
+  obj.field1 = 67;
+};
+
 
 
 //* Object orientation
