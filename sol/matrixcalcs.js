@@ -1,10 +1,9 @@
 // Euler Excercise on slide 58 (chapter 3)
 const a = Math.PI/2;
-const eu = new THREE.Euler(a,a,0,"YXZ");
+const eu = new THREE.Euler(1,2,3,"YXZ");
 const m = new THREE.Matrix4();
 m.makeRotationFromEuler(eu);
 const v = new THREE.Vector3(0,0,1).applyMatrix4(m);
-
 
 // Axis-Angle-Representation: Exercise on slide 69 (chapter 3)
 const theta = Math.PI/180 * 45;
