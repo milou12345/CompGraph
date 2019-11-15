@@ -1,5 +1,4 @@
-// Solution to exercise on slide
-
+// Solution to exercise on slide 50, chapter 4
 
 // Initialize webGL
 const canvas = document.getElementById("mycanvas");
