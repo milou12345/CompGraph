@@ -25,7 +25,7 @@ resizeWin();
 // control parallel or perspective shadow
 const perspective = 0;
 const parallel = 1;
-const shadow = parallel;
+const shadow = perspective;
 
 const light = new THREE.PointLight();
 light.position.set(0,0, 0);
@@ -63,18 +63,19 @@ scene.add(torusKnot);
 torusKnot.updateMatrix();   // make sure torusKnot.matrix is properly filled
 
 
-
-
 const shadowKnotGeometry = knotGeometry.clone();
 if(shadow === perspective) {
+  // HOMEWORK (1): Implement parallel shadow projection
+
+  // do the right thing here to the vertices of shadowKnotGeometry to project to the white screen
 
 } else if(shadow === parallel) {
-  // HOMEWORK: Implement parallel shadow projection
+  // HOMEWORK (2): Implement parallel shadow projection
 }
 
 const shadowKnot = new THREE.Mesh(shadowKnotGeometry,
                                   new THREE.MeshBasicMaterial({color:'#303030'}));
-// scene.add(shadowKnot);
+scene.add(shadowKnot);
 
 // Draw everything
 const controls = new THREE.OrbitControls( camera);
