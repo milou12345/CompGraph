@@ -1,6 +1,6 @@
 "use strict";
 // Setup renderer, camera and light
-const canvas = document.getElementById("myCanvas");
+const canvas = document.getElementById("mycanvas");
 const renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
 renderer.setClearColor('white');    // set background color
 const scene = new THREE.Scene();
