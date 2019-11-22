@@ -22,25 +22,14 @@ window.addEventListener("resize", resizeWin);
 resizeWin();
 
 
-// control parallel or perspective shadow
-const perspective = 0;
-const parallel = 1;
-const shadow = perspective;
-
+// light source with light bulb indicating the position of the light
 const light = new THREE.PointLight();
 light.position.set(0,0, 0);
 const lightBulb = new THREE.Mesh(new THREE.SphereBufferGeometry(0.2),
                                  new THREE.MeshBasicMaterial({color:'yellow'}));
 lightBulb.position.copy(light.position);
-const dirLight = new THREE.DirectionalLight();
-dirLight.position.set(0,0,1);
-// add the right light for the right shadow
-if(shadow === perspective) {
-  scene.add(light);
-  scene.add(lightBulb);
-} else if(shadow === parallel) {
-  scene.add(dirLight);
-}
+scene.add(light);
+light.add(lightBulb);
 
 // the plane that receives the shadow
 const plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(100,60),
@@ -50,7 +39,7 @@ scene.add(plane);
 plane.add(new THREE.AxesHelper());
 // normal vector and distance to origin
 const planeNormal = new THREE.Vector3(0,0,1).normalize();
-const dist = Math.sqrt(plane.position.z);
+const dist = plane.position.length();  // distance to origin
 
 // the object that casts the shadow
 const knotGeometry = new THREE.TorusKnotGeometry(5,1,160,100);
@@ -60,19 +49,29 @@ const mat = new THREE.MeshStandardMaterial({color:'#55cc22',
 const torusKnot = new THREE.Mesh(knotGeometry, mat);
 torusKnot.position.z = -20;
 scene.add(torusKnot);
-torusKnot.updateMatrix();   // make sure torusKnot.matrix is properly filled
+torusKnot.updateMatrixWorld();   // make sure torusKnot.matrixWorld is properly filled
 
 
+// construct the shadow object as copy of the torusKnot geometry and project it onto the screen:
 const shadowKnotGeometry = knotGeometry.clone();
-if(shadow === perspective) {
-  // HOMEWORK (1): Implement parallel shadow projection
+// construct the projection matrix
+const perspProj = new THREE.Matrix4().multiplyScalar(dist);
+perspProj.elements[3] = -planeNormal.x;
+perspProj.elements[7] = -planeNormal.y;
+perspProj.elements[11] = -planeNormal.z;
+perspProj.elements[15] = 0;
+// printMat(torusKnot.matrix);
 
-  // do the right thing here to the vertices of shadowKnotGeometry to project to the white screen
+// apply projection matrix to all vertices
+shadowKnotGeometry.vertices = shadowKnotGeometry.vertices.map(v => {
+  v.applyMatrix4(torusKnot.matrixWorld);
+  const v4 = new THREE.Vector4(v.x, v.y, v.z, 1);
+  v4.applyMatrix4(perspProj);
+  v4.divideScalar(v4.w);
+  return new THREE.Vector3(v4.x, v4.y, v4.z + 0.001);
+});
 
-} else if(shadow === parallel) {
-  // HOMEWORK (2): Implement parallel shadow projection
-}
-
+// construct shadow object from projected geometry
 const shadowKnot = new THREE.Mesh(shadowKnotGeometry,
                                   new THREE.MeshBasicMaterial({color:'#303030'}));
 scene.add(shadowKnot);
