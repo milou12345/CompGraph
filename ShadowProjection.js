@@ -1,3 +1,5 @@
+/*global Stats */
+
 // Initialize webGL
 const canvas = document.getElementById("mycanvas");
 const context = canvas.getContext( 'webgl2' );
@@ -47,43 +49,57 @@ const knotGeometry = new THREE.TorusKnotGeometry(5,1,160,100);
 const mat = new THREE.MeshStandardMaterial({color:'#55cc22',
                                             metalness:0.3});
 const torusKnot = new THREE.Mesh(knotGeometry, mat);
+torusKnot.rotation.y = 0.5;
 torusKnot.position.z = -20;
 scene.add(torusKnot);
 torusKnot.updateMatrixWorld();   // make sure torusKnot.matrixWorld is properly filled
 
 
 // construct the shadow object as copy of the torusKnot geometry and project it onto the screen:
-const shadowKnotGeometry = knotGeometry.clone();
-// construct the projection matrix
-const perspProj = new THREE.Matrix4().multiplyScalar(dist);
+let shadowKnotGeometry = knotGeometry.clone();
+
+// construct the projection matrix: shift the plane on which to project slightly closer to the
+// light source than the white ground in order to avoid z-fighting.
+const perspProj = new THREE.Matrix4().multiplyScalar(dist-0.001);
 perspProj.elements[3] = -planeNormal.x;
 perspProj.elements[7] = -planeNormal.y;
 perspProj.elements[11] = -planeNormal.z;
 perspProj.elements[15] = 0;
+
 // printMat(torusKnot.matrix);
 
 // apply projection matrix to all vertices
+
+// Version 1: extended version, slower, but hopefully clearer
 shadowKnotGeometry.vertices = shadowKnotGeometry.vertices.map(v => {
+  // map vertex to coordinate system where light source sits at origin (=world space in this case):
   v.applyMatrix4(torusKnot.matrixWorld);
+
+  // construct a 4 component vector in order to apply projection matrix and do perspective division:
   const v4 = new THREE.Vector4(v.x, v.y, v.z, 1);
   v4.applyMatrix4(perspProj);
   v4.divideScalar(v4.w);
-  return new THREE.Vector3(v4.x, v4.y, v4.z + 0.001);
+  return new THREE.Vector3(v4.x, v4.y, v4.z);
 });
 
+// Version 2: faster and more compact. Works, because Vector3.applyMatrix4 implicitly divides by 4th component.
+// see https://threejs.org/docs/index.html#api/en/math/Vector3.applyMatrix4
+// let world2Plane = torusKnot.matrixWorld.clone().premultiply(perspProj);
+// shadowKnotGeometry.vertices = shadowKnotGeometry.vertices.map(v => v.applyMatrix4(world2Plane));
+
 // construct shadow object from projected geometry
-const shadowKnot = new THREE.Mesh(shadowKnotGeometry,
-                                  new THREE.MeshBasicMaterial({color:'#303030'}));
+let shadowKnot = new THREE.Mesh(shadowKnotGeometry,
+                                new THREE.MeshBasicMaterial({color:'#303030'}));
 scene.add(shadowKnot);
 
-// Draw everything
+// Mouse control, fps counter and render loop
 const controls = new THREE.OrbitControls( camera);
 controls.zoomSpeed = 5.0;
+
 function render() {
   requestAnimationFrame(render);
 
   controls.update();
   renderer.render(scene, camera);
-
 }
 render();
