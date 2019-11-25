@@ -31,9 +31,9 @@ const ringGeo = new THREE.LatheGeometry( points, 200);
 ringGeo.computeFlatVertexNormals();   // needed for correct interaction with light
 
 // create Mesh:
-var ringMat = new THREE.MeshPhongMaterial( {color: new THREE.Color("#aa99bb"),
-                                            side: THREE.DoubleSide});
-var ring = new THREE.Mesh( ringGeo, ringMat );
+const ringMat = new THREE.MeshPhongMaterial( {color: new THREE.Color("#aa99bb"),
+                                              side: THREE.DoubleSide});
+const ring = new THREE.Mesh( ringGeo, ringMat );
 scene.add(ring);
 
 
