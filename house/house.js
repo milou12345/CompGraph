@@ -32,7 +32,7 @@ scene.add(light);
 
 // Add sun at position of spotlight
 const sun = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32),
-                         new THREE.MeshPhongMaterial({color:"black", emissive:"yellow"}));
+                           new THREE.MeshBasicMaterial({color:0xffdd00}));
 sun.position.copy(light.position);
 scene.add(sun);
 
