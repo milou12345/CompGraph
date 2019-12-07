@@ -28,11 +28,15 @@ scene.add(light);
 // const shadowCamHelper = new THREE.CameraHelper(light.shadow.camera);
 // shadowCamHelper.material.linewidth = 2;
 // scene.add(shadowCamHelper);
-
+//Texture 
+const txtLoader=new THREE.TextureLoader();
+const txtWall = txtLoader.load("http://127.0.0.1:8000/Documents/GIT/CompGraph/house/brick-wall.jpg");
+const txtSun = txtLoader.load("http://127.0.0.1:8000/Documents/GIT/CompGraph/house/sunmap.jpg");
+const txtRoof = txtLoader.load("http://127.0.0.1:8000/Documents/GIT/CompGraph/house/roof.jpg");
 
 // Add sun at position of spotlight
 const sun = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32),
-                           new THREE.MeshBasicMaterial({color:0xffdd00}));
+                           new THREE.MeshBasicMaterial({map:txtSun}));
 sun.position.copy(light.position);
 scene.add(sun);
 
@@ -57,8 +61,9 @@ scene.add(house);
 // NOTE: 'house.castShadow=true' does NOT work !!
 // castShadow=true has to be set on the Mesh objects themselfes!
 
+
 // Add the body to the house
-const bodyMat = new THREE.MeshPhongMaterial({color: "grey"} );
+const bodyMat = new THREE.MeshPhongMaterial({map:txtWall} );
 // transparent body for debugging:
 // bodyMat.transparent = true;
 // bodyMat.opacity = 0.3;
@@ -69,8 +74,9 @@ body.position.y = height/2 + 0.0001;
 house.add(body);
 
 // Add the roof to the house
-const roofMat = new THREE.MeshPhongMaterial({color: "red"} );
+const roofMat = new THREE.MeshPhongMaterial({map:txtRoof} );
 const roofGeo = createRoofGeo(1.1*len,1.1*width,0.5*height);
+
 
 const roof = new THREE.Mesh(roofGeo, roofMat);
 roof.castShadow = true;

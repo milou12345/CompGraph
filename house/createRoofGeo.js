@@ -29,6 +29,10 @@ function createRoofGeo(l, w, h, frontSlope=1) {
 
   geo.faces[7] = new THREE.Face3(3,4,5);
 
+  geo.faceVertexUvs[0] = new Array (8);
+  geo.faceVertexUvs[0][7] = new Array(3);
+  geo.faceVertexUvs[0][7][0] = new THREE.Vector2(0,0);
+
   // flat shading: set all 3 vertex normals of each face equal to face normal
   geo.computeFlatVertexNormals();
 
